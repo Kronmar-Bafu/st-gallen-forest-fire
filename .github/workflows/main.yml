@@ -20,8 +20,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Puppeteer
-        run: npm install puppeteer
+      - name: Install Dependendies 
+        run: npm install puppeteer pixelmatch pngjs
 
       - name: Take Screenshot
         run: node screenshot.js
