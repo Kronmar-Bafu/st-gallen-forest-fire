@@ -45,10 +45,9 @@ const PNG = require('pngjs').PNG;
     threshold: 0.1
   });
 
-  fs.writeFileSync(diffPath, PNG.sync.write(diff));
-
   if (numDiffPixels/totalPixels > 0.2) {
     console.log(`🟥 ${numDiffPixels} pixels changed between ${prevFile} and ${path.basename(currentPath)}.`);
+    fs.writeFileSync(diffPath, PNG.sync.write(diff));
   } else {
     console.log(`✅ No visual changes detected.`);
   }
