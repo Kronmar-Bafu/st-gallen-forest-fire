@@ -38,7 +38,7 @@ jobs:
 
       - name: Commit new screenshots
         run: |
-          git add screenshots/*
+          git add screenshots/
           git commit -m "Add screenshot taken at $timestamp" || echo "No changes to commit"
           git push origin HEAD:main
         env:
