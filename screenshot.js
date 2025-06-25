@@ -13,6 +13,6 @@ const path = require('path');
   }
   const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
   const filePath = path.join(dir, `screenshot-${timestamp}.png`);
-  await page.screenshot({ path: 'screenshot.png', fullPage: true });
+  await page.screenshot({ path: filePath, fullPage: true });
   await browser.close();
 })();
