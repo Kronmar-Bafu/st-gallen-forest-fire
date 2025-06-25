@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const pixelmatch = require('pixelmatch');
+const pixelmatch = require('pixelmatch').default;
 const PNG = require('pngjs').PNG;
 
 (async () => {
