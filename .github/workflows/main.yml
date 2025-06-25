@@ -1,7 +1,7 @@
 name: screenshots ci actions
 on:
   schedule:
-    - cron: "*/2 * * * *"
+    - cron: "*/5 * * * *"
 jobs:
   screenshots:
     runs-on: ubuntu-latest
