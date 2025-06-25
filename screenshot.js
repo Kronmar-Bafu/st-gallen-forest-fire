@@ -7,6 +7,9 @@ const fs = require('fs');
   await page.goto('https://visualize.admin.ch/de/v/4lPHCdjPS8Se', { waitUntil: 'networkidle2' });
   await page.waitForTimeout(2000);
   const dir = path.join(__dirname, 'screenshots');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
   const timestamp = new Date().toISOString().replace(/[:.]/g,'-');
   const filePath = path.join(dir, `screenshot-${timestamp}.png`);
   await page.screenshot({ path: 'screenshot.png', fullPage: true });
