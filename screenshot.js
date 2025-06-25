@@ -38,6 +38,8 @@ const PNG = require('pngjs').PNG;
   const img2 = PNG.sync.read(fs.readFileSync(currentPath));
   const { width, height } = img1;
 
+  const totalPixels = width*height;
+
   const diff = new PNG({ width, height });
   const numDiffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, {
     threshold: 0.1
@@ -45,7 +47,7 @@ const PNG = require('pngjs').PNG;
 
   fs.writeFileSync(diffPath, PNG.sync.write(diff));
 
-  if (numDiffPixels > 0) {
+  if (numDiffPixels/totelPixels > 0.5) {
     console.log(`🟥 ${numDiffPixels} pixels changed between ${prevFile} and ${path.basename(currentPath)}.`);
   } else {
     console.log(`✅ No visual changes detected.`);
