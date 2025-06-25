@@ -2,8 +2,8 @@ name: Take Homepage Screenshot
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Every 5 minutes
-  workflow_dispatch:       # Allows manual triggering
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 jobs:
   screenshot:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # We use our own token for pushing
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -19,32 +21,29 @@ jobs:
           node-version: '20'
 
       - name: Install Puppeteer
-        run: |
-          npm install puppeteer
+        run: npm install puppeteer
 
       - name: Take Screenshot
         run: node screenshot.js
 
-      - name: Upload Screenshot as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: homepage-screenshot
-          path: screenshots/
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and Push Screenshot
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      
+          # Stage only screenshots directory
           git add screenshots/
-          timestamp=$(date)
-          git commit -m "Add screenshot taken at $timestamp" || echo "No changes to commit"
-      
-          # Inject token into remote URL for authenticated push
+
+          # Avoid failing if nothing changed
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+
+          timestamp=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          git commit -m "Add screenshot taken at $timestamp"
+
+          # Set remote with token for pushing
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
           git push origin HEAD:main
-
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
