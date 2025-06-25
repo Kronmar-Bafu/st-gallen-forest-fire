@@ -31,17 +31,20 @@ jobs:
           name: homepage-screenshot
           path: screenshots/
 
-      - name: Configure Git
+      - name: Commit and Push Screenshot
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit new screenshots
-        run: |
+      
           git add screenshots/
           timestamp=$(date)
           git commit -m "Add screenshot taken at $timestamp" || echo "No changes to commit"
+      
+          # Inject token into remote URL for authenticated push
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
           git push origin HEAD:main
-        env:
+
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
